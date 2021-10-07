@@ -14,6 +14,8 @@ import mongoose from 'mongoose'
 import MongoStore from 'connect-mongo'
 import session from 'express-session'
 import { COOKIE_NAME, __prod__ } from './constants'
+import { Context } from './types/Context'
+import { PostResolver } from './resolvers/post'
 
 const main = async () => {
     await createConnection({
@@ -53,7 +55,8 @@ const main = async () => {
     }))
 
     const apolloServer = new ApolloServer({
-        schema: await buildSchema({ resolvers: [HelloResovlver, UserResolver], validate: false }),
+        schema: await buildSchema({ resolvers: [HelloResovlver, UserResolver, PostResolver], validate: false }),
+        context:({req,res}):Context=>({req,res}),
         plugins:[ApolloServerPluginLandingPageGraphQLPlayground()]
     })
 
