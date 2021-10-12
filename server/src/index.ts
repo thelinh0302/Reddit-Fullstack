@@ -16,6 +16,7 @@ import session from 'express-session'
 import { COOKIE_NAME, __prod__ } from './constants'
 import { Context } from './types/Context'
 import { PostResolver } from './resolvers/post'
+import cors from 'cors';
 
 const main = async () => {
     await createConnection({
@@ -28,6 +29,10 @@ const main = async () => {
         entities:[User, Post]
     })
     const app = express()
+    app.use(cors({
+        origin: 'http://localhost:8080',
+        credentials: true
+    }))
 
     const mongoUrl =`mongodb+srv://${process.env.SESSION_DB_USERNAME_DEV}:${process.env.SESSION_DB_PASSWORD_DEV}@cluster0.h9frt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 
