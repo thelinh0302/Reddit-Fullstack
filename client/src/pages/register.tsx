@@ -1,44 +1,37 @@
 import { Box, Button, FormControl } from "@chakra-ui/react";
-import { Formik, Form } from "formik";
+import { Formik, Form, FormikHelpers } from "formik";
+import { useRouter } from "next/router";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
-import { registerMutation } from "../graphql-client/mutation";
-import { useMutation } from "@apollo/client";
+import { RegisterInput, useRegisterMutation } from "../generated/graphql";
+import { mapFieldErrors } from "../helper/mapFieldHelper";
 
 const Register = () => {
-  const newInitialState: NewUserInput = { username: "", email: "", password: "" };
+  const router = useRouter();
+  const newInitialState: RegisterInput = { username: "", email: "", password: "" };
 
-  interface UserMutationResponse {
-    code: number;
-    success: boolean;
-    message: string;
-    user: string;
-    errors: string;
-  }
+  const [registerUser, { data, error }] = useRegisterMutation();
 
-  interface NewUserInput {
-    username: string;
-    email: string;
-    password: string;
-  }
-
-  const [registerUser, { data, error }] = useMutation<
-    { register: UserMutationResponse },
-    { registerInput: NewUserInput }
-  >(registerMutation);
-
-  const onRegisterSubmit = (values: NewUserInput) => {
-    return registerUser({
+  const onRegisterSubmit = async (
+    values: RegisterInput,
+    { setErrors }: FormikHelpers<RegisterInput>
+  ) => {
+    const response = await registerUser({
       variables: {
         registerInput: values,
       },
     });
+    if (response.data?.register?.errors) {
+      setErrors(mapFieldErrors(response.data.register.errors));
+    } else if (response.data?.register?.user) {
+      router.push("/");
+    }
   };
 
   return (
     <Wrapper>
       {error && <p> Failed to register </p>}
-      {data && data.register.success && <p> Registered sucessfully {JSON.stringify(data)} </p>}
+      {data && data.register?.success && <p> Registered sucessfully {JSON.stringify(data)} </p>}
       <Formik initialValues={newInitialState} onSubmit={onRegisterSubmit}>
         {({ isSubmitting }) => (
           <Form>
