@@ -21,7 +21,7 @@ export class PostResolver{
             })
             await newPost.save() 
             return {
-                code: 200,
+                code:200,
                 success: true,
                 message: 'Post created successfully',
                 post: newPost

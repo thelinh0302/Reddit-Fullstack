@@ -34,7 +34,7 @@ const main = async () => {
         credentials: true
     }))
 
-    const mongoUrl =`mongodb+srv://${process.env.SESSION_DB_USERNAME_DEV}:${process.env.SESSION_DB_PASSWORD_DEV}@cluster0.h9frt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
+    const mongoUrl =`mongodb+srv://${process.env.SESSION_DB_USERNAME_DEV}:${process.env.SESSION_DB_PASSWORD_DEV}@cluster0.ibtcjtr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 
     //session/cookie store
     await mongoose.connect(mongoUrl, {
