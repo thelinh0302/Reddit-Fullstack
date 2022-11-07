@@ -1,20 +1,21 @@
-import { Box, Button, FormControl } from "@chakra-ui/react";
-import { Formik, Form, FormikHelpers } from "formik";
-import { useRouter } from "next/router";
-import InputField from "../components/InputField";
-import Wrapper from "../components/Wrapper";
-import { RegisterInput, useRegisterMutation } from "../generated/graphql";
-import { mapFieldErrors } from "../helper/mapFieldHelper";
+import {Box, Button, FormControl} from '@chakra-ui/react';
+import {Formik, Form, FormikHelpers} from 'formik';
+import {useRouter} from 'next/router';
+import InputField from '../components/InputField';
+import Wrapper from '../components/Wrapper';
+import {RegisterInput, useRegisterMutation} from '../generated/graphql';
+import {mapFieldErrors} from '../helper/mapFieldHelper';
+import React from 'react';
 
-const Register = () => {
+const Register:React.FC = () => {
   const router = useRouter();
-  const newInitialState: RegisterInput = { username: "", email: "", password: "" };
+  const newInitialState: RegisterInput = {username: '', email: '', password: ''};
 
-  const [registerUser, { data, error }] = useRegisterMutation();
+  const [registerUser, {data, error}] = useRegisterMutation();
 
   const onRegisterSubmit = async (
-    values: RegisterInput,
-    { setErrors }: FormikHelpers<RegisterInput>
+      values: RegisterInput,
+      {setErrors}: FormikHelpers<RegisterInput>,
   ) => {
     const response = await registerUser({
       variables: {
@@ -24,7 +25,7 @@ const Register = () => {
     if (response.data?.register?.errors) {
       setErrors(mapFieldErrors(response.data.register.errors));
     } else if (response.data?.register?.user) {
-      router.push("/");
+      router.push('/');
     }
   };
 
@@ -33,7 +34,7 @@ const Register = () => {
       {error && <p> Failed to register </p>}
       {data && data.register?.success && <p> Registered sucessfully {JSON.stringify(data)} </p>}
       <Formik initialValues={newInitialState} onSubmit={onRegisterSubmit}>
-        {({ isSubmitting }) => (
+        {({isSubmitting}) => (
           <Form>
             <FormControl>
               <InputField name="username" lable="Username" placeholder="Please enter username" />
